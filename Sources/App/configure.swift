@@ -27,8 +27,6 @@ public func configure(_ app: Application) async throws {
     app.sessions.configuration.cookieFactory = { sessionID in
             .init(string: sessionID.string, isSecure: true, isHTTPOnly: true)
     }
-
-    app.middleware.use(app.sessions.middleware)
     
     // register routes
     try routes(app)

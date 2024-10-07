@@ -14,14 +14,18 @@ func routes(_ app: Application) throws {
     
     //app.middleware.use(LoggingMiddleware())
     
-    app.middleware.use(UserSessionAuthenticator())
-    let portalRedirect = app.grouped(AuthenticatedUser.redirectMiddleware(path: "login"))
+    let authenticated = app.routes.grouped([
+        app.sessions.middleware,
+        UserSessionAuthenticator()
+    ])
     
-    app.get("login") { req async throws in
+    let portalRedirect = authenticated.grouped(AuthenticatedUser.redirectMiddleware(path: "login"))
+    
+    authenticated.get("login") { req async throws in
         try await req.view.render("login", ["title": "Login"])
     }
     
-    app.get("signup") { req async throws in
+    authenticated.get("signup") { req async throws in
         try await req.view.render("signup", ["title": "Signup"])
     }
     
@@ -29,13 +33,13 @@ func routes(_ app: Application) throws {
         try await req.view.render("portal", ["title": "Portal"])
     }
 
-    app.get("verify") { req async throws in
+    authenticated.get("verify") { req async throws in
         return try await req.view.render("verify", ["title": "Verify"])
     }
     
-    app.post("login", use: login)
-    app.post("signup", use: signup)
-    app.post("verify", use: verify)
+    authenticated.post("login", use: login)
+    authenticated.post("signup", use: signup)
+    authenticated.post("verify", use: verify)
 }
 
 @Sendable
