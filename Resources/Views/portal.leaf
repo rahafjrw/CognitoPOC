@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>#(title)</title>
+</head>
+
+<body>
+  <h1>Welcome!</h1>
+  <form action="/delete" method="post">
+    <input type="submit" name="delete" value="Delete Account" />
+  </form>
+  <a href="/">Home<a>
+</body>
+</html>

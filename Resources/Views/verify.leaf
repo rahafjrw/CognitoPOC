@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>#(title)</title>
+</head>
+
+<body>
+  <h1>#(title)</h1>
+  <form action="/verify" method="POST">
+    <label>Email:</label>
+    <input type="text" id="email" name="email">
+    <label>confirmation code</label>
+    <input type="text" id="confirmation" name="confirmation">
+    <button>Submit</button>
+  </form>
+</body>
+</html>

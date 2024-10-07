@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>#(title)</title>
+</head>
+
+<body>
+  <h1>#(title)</h1>
+  <form action="/login" method="POST">
+    <label>Email:</label>
+    <input type="text" id="email" name="email">
+    <label>Password:</label>
+    <input type="password" id="password" name="password">
+    <button>Log in</button>
+  </form>
+  <a href="signup">Create an account<a>
+</body>
+</html>
