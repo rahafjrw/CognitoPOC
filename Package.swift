@@ -13,6 +13,8 @@ let package = Package(
         .package(url: "https://github.com/vapor/leaf.git", from: "4.3.0"),
         // 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
+        // Fluent
+        .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
         // Vapor AWS Cognito Wrapper
         .package(url: "https://github.com/vapor-community/soto-cognito-authentication.git", .upToNextMajor(from: "4.0.0"))
     ],
@@ -22,6 +24,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Leaf", package: "leaf"),
                 .product(name: "Vapor", package: "vapor"),
+                .product(name: "Fluent", package: "fluent"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),
                 .product(name: "SotoCognitoAuthentication", package: "soto-cognito-authentication")

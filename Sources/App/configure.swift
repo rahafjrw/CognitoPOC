@@ -21,16 +21,15 @@ public func configure(_ app: Application) async throws {
     )
     app.cognito.authenticatable = CognitoAuthenticatable(configuration: awsCognitoConfiguration)
     
-//    app.sessions.use(.memory)
-//    
-//    // Configures cookie value creation.
-//    app.sessions.configuration.cookieFactory = { sessionID in
-//        .init(string: sessionID.string, isSecure: true)
-//    }
-//
-//    // specify later to only the routes that use it
-//    app.middleware.use(app.sessions.middleware)
+    app.sessions.use(.memory)
+    
+    // Configures cookie value creation.
+    app.sessions.configuration.cookieFactory = { sessionID in
+            .init(string: sessionID.string, isSecure: true, isHTTPOnly: true)
+    }
 
+    app.middleware.use(app.sessions.middleware)
+    
     // register routes
     try routes(app)
 }

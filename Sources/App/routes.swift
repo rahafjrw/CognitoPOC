@@ -4,6 +4,7 @@ import SotoCognitoAuthentication
 import SotoCognitoAuthenticationKit
 import SotoCognitoIdentityProvider
 import SotoCognitoIdentity
+import Fluent
 
 
 func routes(_ app: Application) throws {
@@ -11,16 +12,10 @@ func routes(_ app: Application) throws {
         try await req.view.render("home", ["title": "Home"])
     }
     
-    app.middleware.use(LoggingMiddleware())
-    app.middleware.use(app.sessions.middleware)
-    app.middleware.use(UserSessionAuthenticator())
+    //app.middleware.use(LoggingMiddleware())
     
-//    let authenticated = app.routes.grouped([
-//        app.sessions.middleware,
-//        UserSessionAuthenticator(),
-//    ])
-//    
-//    let portalRedirect = authenticated.grouped(AuthenticatedUser.redirectMiddleware(path: "login"))
+    app.middleware.use(UserSessionAuthenticator())
+    let portalRedirect = app.grouped(AuthenticatedUser.redirectMiddleware(path: "login"))
     
     app.get("login") { req async throws in
         try await req.view.render("login", ["title": "Login"])
@@ -30,7 +25,7 @@ func routes(_ app: Application) throws {
         try await req.view.render("signup", ["title": "Signup"])
     }
     
-    app.get("portal") { req async throws in
+    portalRedirect.get("portal") { req async throws in
         try await req.view.render("portal", ["title": "Portal"])
     }
 
@@ -53,7 +48,7 @@ func login(_ req: Request) async throws -> Response {
     case .authenticated(let authenticatedResponse):
         req.auth.login(AuthenticatedUser(sessionID: authenticatedResponse.accessToken!))
     default:
-        print("")
+        break
     }
     throw Abort.redirect(to: "portal")
 }
@@ -106,8 +101,6 @@ struct LoggingMiddleware: AsyncMiddleware {
         print("logged")
         return try await next.respond(to: request)
     }
-    
-    
 }
 
 
