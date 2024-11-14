@@ -42,23 +42,31 @@ func routes(_ app: Application) throws {
 
 @Sendable
 func login(_ req: Request) async throws -> Response {
-    let user = try req.content.decode(LoginUser.self)
-    let response = try await req.application.cognito.authenticatable.authenticate(username: user.email,
-                                                                                  password: user.password,
-                                                                                    context: req)
-    switch response {
-    case .authenticated(let authenticatedResponse):
-        let user = AuthenticatedUser(sessionID: authenticatedResponse.accessToken!)
-        req.auth.login(user)
-        req.session.authenticate(user)
-    default:
-        break
+    do {
+        let user = try req.content.decode(LoginUser.self)
+        let response = try await req.application.cognito.authenticatable.authenticate(username: user.email,
+                                                                                      password: user.password,
+                                                                                      context: req)
+        switch response {
+        case .authenticated(let authenticatedResponse):
+            let user = AuthenticatedUser(sessionID: authenticatedResponse.accessToken!)
+            req.auth.login(user)
+            req.session.authenticate(user)
+        case .challenged(let challengedResponse): // TODO: handle challenged
+            break
+        }
+        return req.redirect(to: "portal")
+    } catch let error as SotoCognitoError {
+        // TODO: handle cases (unauthorized, unexpectedResult, invalidPublicKey)
+        return try await req.view.render("login", ["title": "Login"]).encodeResponse(status: .unauthorized, for: req)
+    } catch {
+        return try await req.view.render("login", ["title": "Login"]).encodeResponse(status: .unauthorized, for: req)
     }
-    return req.redirect(to: "portal")
 }
 
 @Sendable
 func signup(_ req: Request) async throws -> Response {
+    // TODO: wrap in do catch and handle errors
     let user = try req.content.decode(LoginUser.self)
     let _ = try await req.application.cognito.authenticatable.signUp(username: user.email, password: user.password, attributes: [:],
                                                                             on:req.eventLoop)
@@ -67,6 +75,7 @@ func signup(_ req: Request) async throws -> Response {
 
 @Sendable
 func verify(_ req: Request) async throws -> Response {
+    // TODO: wrap in do catch and handle errors
     let user = try req.content.decode(ConfirmUser.self)
     try await req.application.cognito.authenticatable.confirmSignUp(username: user.email, confirmationCode: user.confirmation)
     return req.redirect(to: "login")
