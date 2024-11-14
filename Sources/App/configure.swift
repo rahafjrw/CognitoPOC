@@ -28,6 +28,8 @@ public func configure(_ app: Application) async throws {
             .init(string: sessionID.string, isSecure: true, isHTTPOnly: true)
     }
     
+    app.middleware.use(app.sessions.middleware)
+    
     // register routes
     try routes(app)
 }
