@@ -1,0 +1,1 @@
+A simple proof of concept for using the [Vapor wrapper for Soto Cognito Authentication Kit](https://github.com/vapor-community/soto-cognito-authentication) with [Vapor's session authentication](https://docs.vapor.codes/security/authentication/#session) for authentication persistence.
